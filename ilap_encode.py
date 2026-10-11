@@ -39,6 +39,7 @@ def make_output_code(tcode):
     fullcode[5] = 0x00
 
     # Debug: Initial code
+    print(f"ID number: {tcode}")
     print("Initial code: ")
     print(
         f"{fullcode[0]:X} {fullcode[1]:X} {fullcode[2]:X} {fullcode[3]:X} {fullcode[4]:X} {fullcode[5]:X}"
@@ -64,7 +65,7 @@ def make_output_code(tcode):
         f"{fullcode[0]:X} {fullcode[1]:X} {fullcode[2]:X} {fullcode[3]:X} {fullcode[4]:X} {fullcode[5]:X}"
     )
 
-    return fullcode
+    #return fullcode
     
 # Test a known code
 make_output_code(2545114)
