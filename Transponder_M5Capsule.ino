@@ -42,9 +42,9 @@ IDcode ID[5] = {
     {ILAP, {0x0A, 0xBE, 0x8C, 0x7C, 0xCD, 0xC4}, 5738332}  // i-Lap 5738332
 };
 
-uint8_t bit_widths[2] = {
-    (uint8_t)270, // type 0, trackmate 27 uSec
-    (uint8_t)256 // type 1, i-Lap 25.6 uSec
+uint16_t bit_widths[2] = {
+    (uint16_t)270, // type 0, trackmate 27 uSec
+    (uint16_t)256 // type 1, i-Lap 25.6 uSec
 };
 
 // Timer ISR that should run every 24 uSec
