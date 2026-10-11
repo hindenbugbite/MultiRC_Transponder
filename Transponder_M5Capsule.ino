@@ -43,8 +43,8 @@ IDcode ID[5] = {
 };
 
 uint16_t bit_widths[2] = {
-    (uint16_t)270, // type 0, trackmate 27 uSec
-    (uint16_t)256 // type 1, i-Lap 25.6 uSec
+    270, // type 0, trackmate 27 uSec
+    256 // type 1, i-Lap 25.6 uSec
 };
 
 // Timer ISR that should run every 24 uSec
