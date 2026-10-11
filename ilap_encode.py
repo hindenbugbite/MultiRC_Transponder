@@ -64,7 +64,19 @@ def make_output_code(tcode):
     print(
         f"{fullcode[0]:X} {fullcode[1]:X} {fullcode[2]:X} {fullcode[3]:X} {fullcode[4]:X} {fullcode[5]:X}"
     )
+    # Invert all bytes (masked to 8 bits to match byte behavior)
+    fullcode[0] = (~fullcode[0]) & 0xFF
+    fullcode[1] = (~fullcode[1]) & 0xFF
+    fullcode[2] = (~fullcode[2]) & 0xFF
+    fullcode[3] = (~fullcode[3]) & 0xFF
+    fullcode[4] = (~fullcode[4]) & 0xFF
+    fullcode[5] = (~fullcode[5]) & 0xFF
 
+    # Debug: After inversion
+    print("Full code after inversion: ")
+    print(
+        f"0{fullcode[0]:X} {fullcode[1]:X} {fullcode[2]:X} {fullcode[3]:X} {fullcode[4]:X} {fullcode[5]:X}"
+    )
     #return fullcode
     
 # Test a known code
