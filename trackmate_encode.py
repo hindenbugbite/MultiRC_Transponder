@@ -12,17 +12,14 @@ def compute_crc16(data_bytes, polynomial=0x1021, init_value=0x0000, xor_out=0x7C
                 crc = ((crc << 1) ^ polynomial) & 0xFFFF
             else:
                 crc = (crc << 1) & 0xFFFF
-                
+
     # Apply the final XOR value
     return crc ^ xor_out
 
-# Input ID number (eg 1234 or 409)
-ID = 8192
-
 
 def ID_to_list(uid):
-    upper = uid//256
-    lower = uid-(upper*256)
+    upper = uid // 256
+    lower = uid - (upper * 256)
     return [upper, lower]
 
 
@@ -36,16 +33,28 @@ def PrintID(var_ID):
 
 
 def main():
-    """Entry point: accept a 4-digit decimal ID on the command line and print its CRC."""
-    parser = argparse.ArgumentParser(description="Print ID and computed CRC for a 4-digit ID number")
-    parser.add_argument('id', metavar='ID', help='4-digit ID number (0000-9999)')
+    """Entry point: accept an ID from the command line and print its CRC.
+
+    If no ID is provided, defaults to 8192.
+    """
+    parser = argparse.ArgumentParser(description="Print ID and computed CRC for a numeric ID")
+    parser.add_argument(
+        'id',
+        nargs='?',
+        default='8192',
+        metavar='ID',
+        help='Numeric ID (0-9999). Defaults to 8192 if omitted.'
+    )
     args = parser.parse_args()
 
-    id_str = args.id
-    if not id_str.isdigit() or len(id_str) != 4:
-        parser.error('ID must be a 4-digit decimal number, for example 0123 or 409 (use leading zeros to make 4 digits)')
+    try:
+        var_id = int(args.id)
+    except ValueError:
+        parser.error('ID must be a decimal number between 0 and 9999')
 
-    var_id = int(id_str)
+    if var_id < 0 or var_id > 9999:
+        parser.error('ID must be between 0 and 9999')
+
     PrintID(var_id)
 
 
