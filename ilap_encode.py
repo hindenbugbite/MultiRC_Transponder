@@ -1,3 +1,6 @@
+import argparse
+
+
 def crc_xmodem_update(crc, data):
     crc = crc ^ (data << 8)
     for _ in range(8):
@@ -78,6 +81,25 @@ def make_output_code(tcode):
         f"0{fullcode[0]:X} {fullcode[1]:X} {fullcode[2]:X} {fullcode[3]:X} {fullcode[4]:X} {fullcode[5]:X}"
     )
     #return fullcode
-    
-# Test a known code
-make_output_code(2545114)
+
+
+def main():
+    """Entry point: accept a 7-digit decimal ID on the command line and pass it to make_output_code.
+
+    If no ID is provided, defaults to 2545114.
+    """
+    parser = argparse.ArgumentParser(description="Print ILAP encoded output for a 7-digit ID number")
+    parser.add_argument('id', nargs='?', default='2545114', metavar='ID',
+                        help='7-digit ID number (0000000-9999999). Defaults to 2545114 if omitted')
+    args = parser.parse_args()
+
+    id_str = args.id
+    if not id_str.isdigit() or len(id_str) != 7:
+        parser.error('ID must be a 7-digit decimal number, for example 2545114 (use leading zeros if needed)')
+
+    tcode = int(id_str)
+    make_output_code(tcode)
+
+
+if __name__ == '__main__':
+    main()
