@@ -1,22 +1,22 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#define TIMER_PIN PB0
-#define IR_PIN PB4
+#define TIMER_PIN PB1
+#define IR_PIN PB0
 
 // Global counter incremented in the Timer0 COMPA ISR
 volatile uint16_t bitCount = 0;
 volatile uint16_t intervalTime = 400;
 volatile bool pinState = false;
 
-uint8_t ID[4] = {0x04, 0xD2, 0x5B, 0xBB};
+uint8_t ID[4] = {0x04, 0xD2, 0x5B, 0xBB}; // trackmate 1234
 
 void setup() {
-  // Set PB0 (OC0A) and PB4 (OC1B) as outputs
-  DDRB |= (1 << PB0) | (1 << PB4);
+  // Set PB0 (OC0A) and PB1 (OC1A) as outputs
+  DDRB |= (1 << PB0) | (1 << PB1);
 
   // ------------------------------------------------------------------
-  // 1. TIMER 0 CONFIGURATION (Square wave on PB0 + ISR)
+  // 1. TIMER 0 CONFIGURATION (Square wave on PB0)
   // ------------------------------------------------------------------
   // Reset Timer0 Control Registers
   TCCR0A = 0;
@@ -29,35 +29,36 @@ void setup() {
   // Toggle OC0A (PB0) on Compare Match (COM0A0 = 1)
   TCCR0A |= (1 << COM0A0);
 
-  // Set Compare Match Value for ~13.5 us half-period (27 us full period at 16.5 MHz)
-  OCR0A = 222;
-
-  // Enable Timer0 Compare Match A Interrupt
-  TIMSK |= (1 << OCIE0A);
+  // Set Compare Match Value for 425kHz period at 16.5 MHz
+  OCR0A = 18;
 
   // Start Timer0 with No Prescaling (CS00 = 1)
   TCCR0B |= (1 << CS00);
 
 
   // ------------------------------------------------------------------
-  // 2. TIMER 1 CONFIGURATION (420 kHz PWM on PB4)
+  // 2. TIMER 1 CONFIGURATION (27us on PB1 OC1A)
   // ------------------------------------------------------------------
   // Reset Timer1 Control Register
   TCCR1 = 0;
   GTCCR = 0;
   TCNT1 = 0;
 
-  // Set Top Value for Timer1 Period (OCR1C) -> f = 16MHz / (1 * (38 + 1)) ~ 423 kHz
-  OCR1C = 38;
+  // Set Top Value for Timer1 Period (OCR1C) -> 27 uSec at 8.25 MHz
+  OCR1C = 222;
 
-  // Set Duty Cycle (~50% duty cycle: 9 / 38)
-  OCR1B = 19;
+  // Set compare A
+  OCR1A = 0;
 
-  // Enable PWM on Channel B (OC1B / PB4) and clear on Compare Match
-  GTCCR |= (1 << PWM1B) | (1 << COM1B1);
+  // Enable CTC on Channel A (OC1A / PB1) and toggle on Compare Match
+  //TCCR1 |= (1 << CTC1) | (1 << COM1A0);
+  TCCR1 |= (1 << CTC1);
 
-  // Start Timer1 with Prescaler = 1 (CS10 = 1)
-  TCCR1 |= (1 << CS10);
+  // Enable Timer0 Compare Match A Interrupt
+  TIMSK |= (1 << OCIE1A);
+
+  // Start Timer1 with Prescaler = 2 (CS11 = 1)
+  TCCR1 |= (1 << CS11);
 
 
   // ------------------------------------------------------------------
@@ -107,7 +108,7 @@ void loop() {
   // Random time interval between frames in 25-27 uSec bit counts
   // 55 is minimum for consecutive frames, 400 is about 10 mSec
   if (bitCount == 0) {
-    intervalTime = random(55, 400);
+    //intervalTime = random(55, 400);
     frameCount++;       // keep track of frame statistics
 
   }
@@ -116,11 +117,13 @@ void loop() {
 // --------------------------------------------------------------------
 // TIMER0 COMPA INTERRUPT SERVICE ROUTINE
 // --------------------------------------------------------------------
-ISR(TIMER0_COMPA_vect) {
+ISR(TIMER1_COMPA_vect) {
   if (pinState) {
+    // Set it to input to gate PWM for 1
     DDRB &= ~(1 << IR_PIN);
   }
   else {
+    // Set as output to let PWM through for 0
     DDRB |= (1 << IR_PIN);
   }
 

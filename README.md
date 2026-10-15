@@ -4,6 +4,8 @@
 
 This project is a collection of Arduino sketches to emulate common IR timing transponders for RC/FPV racing. The goal is to allow low cost or expanded function transponders that anyone can create.
 
+Trackmate IR code was decoded using a BusPirate to sample the code from several transponders. 
+
 The i-Lap functions take some code from the CoreIR project. That project also has good references on building the basic hardware.
 
 - https://github.com/RaceFPV/CoreIR
@@ -14,6 +16,7 @@ The Arduino sketch will try to stay lean by simply sending out a predefined code
 
 Run the python script for the system you need (i-Lap/trackmate) either by editing the ID number or using interactive (-i) mode to work with the script directly. This will generate either a 4 byte or 6 byte code that is added to the sketch for compiling.
 
+The M5Capsule can cycle through any number of codes with the top button input with buzzer feedback when the code list repeats.
 
 ## Status
 
