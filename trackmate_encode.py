@@ -25,11 +25,17 @@ def ID_to_list(uid):
 
 def PrintID(var_ID):
     print(f"ID number: {var_ID}")
-    data = ID_to_list(var_ID)
     print(f"ID number in hex: 0x{var_ID:04X}")
+    
+    # Convert ID number to 8-bit array
+    data = ID_to_list(var_ID)
+    # Calculate CRC value for ID
+    crc = ID_to_list(compute_crc16(data, 0x1021, 0x0000, 0x7C40))
+    print(f"CRC value in hex: 0x{crc[0]:02X}{crc[1]:02X}")
 
-    # Test with standard initial values
-    print(f"CRC value in hex: 0x{compute_crc16(data, 0x1021, 0x0000, 0x7C40):04X}")
+    # Print the array to copy into code
+    print(f"Formatted as array: {{0x{data[0]:02X}, 0x{data[1]:02X}, 0x{crc[0]:02X}, 0x{crc[1]:02X}}}")
+
 
 
 def main():

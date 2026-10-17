@@ -45,7 +45,7 @@ def make_output_code(tcode):
     print(f"ID number: {tcode}")
     print("Initial code: ")
     print(
-        f"{fullcode[0]:X} {fullcode[1]:X} {fullcode[2]:X} {fullcode[3]:X} {fullcode[4]:X} {fullcode[5]:X}"
+        f"{fullcode[0]:02X} {fullcode[1]:02X} {fullcode[2]:02X} {fullcode[3]:02X} {fullcode[4]:02X} {fullcode[5]:02X}"
     )
 
     # Generate CRC check bits
@@ -58,14 +58,11 @@ def make_output_code(tcode):
 
     # Debug: CRC details
     print("Feeding bytes into CRC16 XMODEM: ")
-    print(f"{fullcode[4]:X} {fullcode[3]:X} {fullcode[2]:X} {fullcode[0]:X}")
-    print("Got back CRC high byte: ")
-    print(f"{fullcode[1]:X}")
-    print("CRC low byte: ")
-    print(f"{fullcode[5]:X}")
-    print("Full code: ")
+    print(f"{fullcode[4]:02X} {fullcode[3]:02X} {fullcode[2]:02X} {fullcode[0]:02X}")
+    print(f"Got back CRC high byte: {fullcode[1]:02X}")
+    print(f"CRC low byte: {fullcode[5]:02X}")
     print(
-        f"{fullcode[0]:X} {fullcode[1]:X} {fullcode[2]:X} {fullcode[3]:X} {fullcode[4]:X} {fullcode[5]:X}"
+        f"Full code: {fullcode[0]:02X} {fullcode[1]:02X} {fullcode[2]:02X} {fullcode[3]:02X} {fullcode[4]:02X} {fullcode[5]:02X}"
     )
     # Invert all bytes (masked to 8 bits to match byte behavior)
     fullcode[0] = (~fullcode[0]) & 0xFF
@@ -76,9 +73,9 @@ def make_output_code(tcode):
     fullcode[5] = (~fullcode[5]) & 0xFF
 
     # Debug: After inversion
-    print("Full code after inversion: ")
+    print("Invert and formated as array: ")
     print(
-        f"0{fullcode[0]:X} {fullcode[1]:X} {fullcode[2]:X} {fullcode[3]:X} {fullcode[4]:X} {fullcode[5]:X}"
+        f"{{0x{fullcode[0]:02X}, 0x{fullcode[1]:02X}, 0x{fullcode[2]:02X}, 0x{fullcode[3]:02X}, 0x{fullcode[4]:02X}, 0x{fullcode[5]:02X}}}"
     )
     #return fullcode
 
